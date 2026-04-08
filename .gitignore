@@ -1,6 +1,7 @@
 recognition/testaudio.mp3
 .claude
 node_modules
+package-lock.json
 
 # Tauri
 src-tauri/target
