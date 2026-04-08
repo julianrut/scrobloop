@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "scrobloop",
+  "productName": "Scrobloop",
   "version": "0.1.0",
   "identifier": "com.julianrut.scrobloop",
   "build": {

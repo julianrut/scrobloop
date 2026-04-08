@@ -3,11 +3,25 @@ use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButtonState, TrayIconBuilder, TrayIconEvent},
     window::Color,
-    Manager, PhysicalPosition,
+    AppHandle, Manager, PhysicalPosition,
 };
 
 #[cfg(target_os = "macos")]
 use tauri::ActivationPolicy;
+
+fn show_window(app: &AppHandle) {
+    let Some(window) = app.get_webview_window("main") else { return };
+    let Some(tray) = app.tray_by_id("main") else { return };
+    let Ok(Some(rect)) = tray.rect() else { return };
+    let win_size = window.outer_size().unwrap_or_default();
+    let pos = rect.position.to_physical::<i32>(1.0);
+    let size = rect.size.to_physical::<u32>(1.0);
+    let x = pos.x + size.width as i32 / 2 - win_size.width as i32 / 2;
+    let y = pos.y + size.height as i32;
+    let _ = window.set_position(PhysicalPosition::new(x, y));
+    let _ = window.show();
+    let _ = window.set_focus();
+}
 
 fn is_online() -> bool {
     std::net::TcpStream::connect_timeout(
@@ -40,6 +54,8 @@ fn tray_icon() -> Image<'static> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .setup(|app| {
             if cfg!(debug_assertions) {
                 app.handle().plugin(
@@ -51,6 +67,21 @@ pub fn run() {
 
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&quit])?;
+
+            let flag = app.path().app_data_dir().unwrap().join(".welcomed");
+            if !flag.exists() {
+                std::fs::create_dir_all(flag.parent().unwrap()).ok();
+                std::fs::write(&flag, "").ok();
+                use tauri_plugin_notification::NotificationExt;
+                let notif = app.handle().notification();
+                if notif.request_permission().is_ok() {
+                    notif.builder()
+                        .title("Welcome to Scrobloop 👋")
+                        .body("This app lives in your system tray, click the Scrobloop icon")
+                        .show()
+                        .ok();
+                }
+            }
 
             let window = app.get_webview_window("main").unwrap();
             window.set_background_color(Some(Color(0, 0, 0, 0))).unwrap();
@@ -81,7 +112,7 @@ pub fn run() {
                 }
             });
 
-            TrayIconBuilder::new()
+            TrayIconBuilder::with_id("main")
                 .icon(tray_icon())
                 .icon_as_template(true)
                 .menu(&menu)
@@ -92,18 +123,13 @@ pub fn run() {
                     }
                 })
                 .on_tray_icon_event(|tray, event| {
-                    if let TrayIconEvent::Click { position, button_state: MouseButtonState::Up, .. } = event {
+                    if let TrayIconEvent::Click { button_state: MouseButtonState::Up, .. } = event {
                         let app = tray.app_handle();
                         if let Some(window) = app.get_webview_window("main") {
                             if window.is_visible().unwrap_or(false) {
                                 let _ = window.hide();
                             } else {
-                                let win_size = window.outer_size().unwrap();
-                                let x = position.x as i32 - win_size.width as i32 / 2;
-                                let y = position.y as i32;
-                                let _ = window.set_position(PhysicalPosition::new(x, y));
-                                let _ = window.show();
-                                let _ = window.set_focus();
+                                show_window(app);
                             }
                         }
                     }
@@ -112,6 +138,10 @@ pub fn run() {
 
             #[cfg(target_os = "macos")]
             app.set_activation_policy(ActivationPolicy::Accessory);
+
+            use tauri_plugin_autostart::ManagerExt;
+            let _ = app.autolaunch().enable();
+
 
             Ok(())
         })
