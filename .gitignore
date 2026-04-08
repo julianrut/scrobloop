@@ -1,2 +1,16 @@
-# A test audio file for testing
 recognition/testaudio.mp3
+.claude
+node_modules
+
+# Tauri
+src-tauri/target
+
+# Python
+build/
+dist/
+__pycache__/
+*.spec
+*.pyc
+
+# macOS
+.DS_Store

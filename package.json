@@ -1,0 +1,24 @@
+{
+  "name": "scrobloop",
+  "version": "0.1.0",
+  "description": "Scrobble to Last.fm from your mic or computer audio. Perfect for vinyl, CDs, and any physical media.",
+  "homepage": "https://github.com/julianrut/scrobloop#readme",
+  "bugs": {
+    "url": "https://github.com/julianrut/scrobloop/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julianrut/scrobloop.git"
+  },
+  "license": "ISC",
+  "author": "julianrut",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.1"
+  }
+}
