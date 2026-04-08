@@ -9,6 +9,14 @@ use tauri::{
 #[cfg(target_os = "macos")]
 use tauri::ActivationPolicy;
 
+fn is_online() -> bool {
+    std::net::TcpStream::connect_timeout(
+        &"1.1.1.1:53".parse().unwrap(),
+        std::time::Duration::from_secs(2),
+    )
+    .is_ok()
+}
+
 fn tray_icon() -> Image<'static> {
     let svg = include_bytes!("../icons/icon_vector.svg");
     let opt = resvg::usvg::Options::default();
@@ -46,6 +54,23 @@ pub fn run() {
 
             let window = app.get_webview_window("main").unwrap();
             window.set_background_color(Some(Color(0, 0, 0, 0))).unwrap();
+
+            let window_clone = window.clone();
+            std::thread::spawn(move || {
+                let mut last = is_online();
+                if !last {
+                    let _ = window_clone.eval("window.location.href = 'no_internet.html'");
+                }
+                loop {
+                    std::thread::sleep(std::time::Duration::from_secs(3));
+                    let online = is_online();
+                    if online != last {
+                        last = online;
+                        let page = if online { "index.html" } else { "no_internet.html" };
+                        let _ = window_clone.eval(&format!("window.location.href = '{page}'"));
+                    }
+                }
+            });
 
             window.on_window_event({
                 let window = window.clone();
