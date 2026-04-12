@@ -1,5 +1,7 @@
 mod lastfm;
+mod scrobble;
 use lastfm::LastfmState;
+use scrobble::ScrobbleState;
 
 use tauri::{
     image::Image,
@@ -11,6 +13,16 @@ use tauri::{
 
 #[cfg(target_os = "macos")]
 use tauri::ActivationPolicy;
+
+#[tauri::command]
+fn get_app_version(app: AppHandle) -> String {
+    app.package_info().version.to_string()
+}
+
+#[tauri::command]
+fn open_url(url: String) -> Result<(), String> {
+    open::that(url).map_err(|e| e.to_string())
+}
 
 fn show_window(app: &AppHandle) {
     let Some(window) = app.get_webview_window("main") else { return };
@@ -57,13 +69,23 @@ fn tray_icon() -> Image<'static> {
 pub fn run() {
     tauri::Builder::default()
         .manage(LastfmState::new())
+        .manage(ScrobbleState::new())
         .invoke_handler(tauri::generate_handler![
             lastfm::is_lastfm_authenticated,
             lastfm::start_lastfm_auth,
             lastfm::check_lastfm_auth_status,
             lastfm::get_lastfm_username,
+            lastfm::get_recent_tracks,
             lastfm::logout,
             lastfm::open_lastfm_profile,
+            get_app_version,
+            open_url,
+            scrobble::start_scrobble,
+            scrobble::stop_scrobble,
+            scrobble::get_audio_devices,
+            scrobble::set_audio_device,
+            scrobble::get_audio_source,
+            scrobble::set_audio_source,
         ])
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_notification::init())

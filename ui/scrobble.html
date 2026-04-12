@@ -2,7 +2,13 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <script>tailwind.config = { darkMode: 'media' }</script>
+  <script>(function(){
+    var t = localStorage.getItem('theme');
+    var html = document.documentElement;
+    if (t === 'dark') { html.classList.add('dark'); }
+    else if (t === 'light') { html.classList.add('light'); }
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { html.classList.add('dark'); }
+  })()</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -10,79 +16,292 @@
     .panel {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .dropdown { animation: fadeIn 0.15s ease both; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .settings-view { animation: slideIn 0.18s ease both; }
+
+    @keyframes sonarPulse {
+      0%   { transform: scale(1);   opacity: 0.5; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+    .sonar-ring { animation: sonarPulse 2s cubic-bezier(0.2,0.6,0.4,1) infinite; }
+    .sonar-ring.delay { animation-delay: 0.9s; }
+
+    @keyframes barDance {
+      to { transform: scaleY(0.2); }
+    }
+    .bar {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: barDance 0.75s ease-in-out infinite alternate;
+    }
+    .b1 { animation-delay: 0.00s; }
+    .b2 { animation-delay: 0.11s; }
+    .b3 { animation-delay: 0.22s; }
+    .b4 { animation-delay: 0.11s; }
+    .b5 { animation-delay: 0.00s; }
+
+    @keyframes trackReveal {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .track-reveal { animation: trackReveal 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+
+    @keyframes badgeIn {
+      from { opacity: 0; transform: translateY(3px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .badge-in { animation: badgeIn 0.25s ease 0.2s both; }
+
+    @keyframes histIn {
+      from { opacity: 0; transform: translateX(6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .hist-in { animation: histIn 0.25s ease both; }
+
+    /* ── Themed element styles ── */
+    #header {
+      border-bottom: 1px solid var(--line);
+    }
+    #user-pill {
+      background: var(--pill);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    #user-pill:hover { background: var(--pill-h); }
+
+    #gear-pill {
+      background: var(--pill);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    #gear-pill:hover { background: var(--pill-h); }
+
+    #user-dropdown {
+      background: var(--drop-bg);
+      box-shadow: var(--drop-shadow);
+    }
+    #user-dropdown button:hover { background-color: var(--drop-item-h); }
+
+    #listen-btn {
+      background: var(--surf-btn);
+      border: 1px solid var(--surf-btn-b);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    }
+    #listen-btn:hover  { transform: scale(1.025); }
+    #listen-btn:active { transform: scale(0.96); }
+
+    #track-strip  { border-top: 1px solid var(--line); }
+    #hist-section-inner { border-top: 1px solid var(--line); }
+
+    .theme-btn {
+      flex: 1;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .theme-btn.active {
+      background: var(--pill-h);
+      color: var(--t1);
+    }
+    .theme-btn:not(.active) {
+      background: var(--pill);
+      color: var(--t2);
+    }
+    .theme-btn:not(.active):hover {
+      background: var(--pill-h);
+    }
+
+    #btn-julian {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-size: 11px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    #mic-select {
+      background: var(--pill);
+      color: var(--t1);
+      transition: background-color 0.15s;
+    }
+    #mic-select:hover { background: var(--pill-h); }
+    #mic-select option {
+      background: var(--drop-bg);
+      color: var(--t1);
+    }
   </style>
 </head>
 <body>
-<div class="panel bg-white dark:bg-[#0a0a0a] flex flex-col">
+<div class="panel flex flex-col">
 
-  <div class="flex items-center justify-between -mx-4 -mt-4 px-4 pt-3 pb-3 border-b border-black/[0.06] dark:border-white/[0.06]">
-
+  <!-- Header -->
+  <div id="header" class="flex items-center justify-between -mx-4 -mt-4 px-4 pt-3 pb-3">
     <div class="flex items-center gap-2">
-      <svg width="18" height="18" viewBox="0 0 353 353" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-black dark:text-white flex-shrink-0">
+      <svg width="18" height="18" viewBox="0 0 353 353" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0" style="color: var(--t1)">
         <path d="M260.15 302.72L259.29 303.58L258.86 304.01C258.43 304.01 258 304.44 258 304.44C258 304.44 257.57 304.44 257.57 304.87C257.14 304.87 256.71 305.3 255.85 305.3H219.73V318.2C219.73 322.93 215.86 326.8 211.13 326.8H141.9C137.17 326.8 133.3 322.93 133.3 318.2V275.2C133.3 270.47 137.17 266.6 141.9 266.6H210.7C215.43 266.6 219.3 270.47 219.3 275.2V288.1H249.83L352.6 173.29C350.88 77.4 272.62 0 176.3 0C79.12 0 0 79.12 0 176.3C0 273.48 79.12 352.6 176.3 352.6C265.31 352.6 338.84 286.38 350.88 200.81L260.15 302.72C260.15 302.29 260.15 302.29 260.15 302.72ZM43.43 167.27C43.43 170.28 43 173.29 43 176.3C43 181.03 39.13 184.9 34.4 184.9C29.67 184.9 25.8 181.03 25.8 176.3C25.8 93.31 93.31 25.8 176.3 25.8C181.03 25.8 184.9 29.67 184.9 34.4C184.9 39.13 181.03 43 176.3 43C173.29 43 170.28 43 167.27 43.43C101.05 47.73 47.73 101.05 43.43 167.27ZM107.5 176.3C107.5 138.46 138.46 107.5 176.3 107.5C214.14 107.5 245.1 138.46 245.1 176.3C245.1 214.14 214.14 245.1 176.3 245.1C138.46 245.1 107.5 214.14 107.5 176.3ZM227.9 176.3C227.9 147.92 204.68 124.7 176.3 124.7C147.92 124.7 124.7 147.92 124.7 176.3C124.7 204.68 147.92 227.9 176.3 227.9C204.68 227.9 227.9 204.68 227.9 176.3ZM150.5 176.3C150.5 162.11 162.11 150.5 176.3 150.5C190.49 150.5 202.1 162.11 202.1 176.3C202.1 190.49 190.49 202.1 176.3 202.1C162.11 202.1 150.5 190.49 150.5 176.3ZM176.3 184.9C171.57 184.9 167.7 181.03 167.7 176.3C167.7 171.57 171.57 167.7 176.3 167.7C181.03 167.7 184.9 171.57 184.9 176.3C184.9 181.03 181.03 184.9 176.3 184.9ZM150.5 309.6V283.8H202.1V309.6H150.5Z" fill="currentColor"/>
       </svg>
-      <span class="text-[13px] font-semibold tracking-[-0.02em] text-black/90 dark:text-white/90">Scrobloop</span>
+      <span class="text-[13px] font-semibold tracking-[-0.02em] t1">Scrobloop</span>
     </div>
 
     <div class="flex items-center gap-1.5">
-
       <div class="relative">
-        <button id="user-pill" class="flex items-center gap-1.5 h-7 px-2.5 rounded-full bg-black/[0.05] dark:bg-white/[0.07] hover:bg-black/[0.09] dark:hover:bg-white/[0.11] transition-colors duration-150 cursor-pointer border-0">
-          <i class="fa-brands fa-lastfm text-[#D51007] text-[11px]"></i>
-          <span id="username" class="text-[11.5px] font-medium tracking-[-0.01em] text-black/75 dark:text-white/75 max-w-[80px] truncate"></span>
-          <i class="fa-solid fa-chevron-down text-[8px] text-black/30 dark:text-white/30"></i>
+        <button id="user-pill" class="flex items-center gap-1.5 h-7 px-2.5 rounded-full">
+          <i class="fa-brands fa-lastfm text-[11px]" style="color:#D51007"></i>
+          <span id="username" class="text-[11.5px] font-medium tracking-[-0.01em] ta max-w-[80px] truncate"></span>
+          <i class="fa-solid fa-chevron-down text-[8px] t3"></i>
         </button>
-
-        <div id="user-dropdown" class="dropdown hidden absolute right-0 top-[calc(100%+6px)] w-44 rounded-xl overflow-hidden z-50 bg-white dark:bg-[#1a1a1a] shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_4px_16px_rgba(0,0,0,0.12)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.5)]">
-          <button id="btn-profile" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-[12.5px] font-medium text-black/80 dark:text-white/80 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors duration-100 border-0 bg-transparent cursor-pointer">
-            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-black/40 dark:text-white/40 w-3"></i>
-            View my profile
+        <div id="user-dropdown" class="dropdown hidden absolute right-0 top-[calc(100%+6px)] w-44 rounded-xl overflow-hidden z-50">
+          <button id="btn-profile" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left border-0 bg-transparent cursor-pointer" style="transition: background-color 0.1s">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] tc w-3"></i>
+            <span class="text-[12.5px] font-medium t1">View my profile</span>
           </button>
-          <div class="h-px bg-black/[0.06] dark:bg-white/[0.06] mx-3"></div>
-          <button id="btn-logout" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-[12.5px] font-medium text-[#D51007] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors duration-100 border-0 bg-transparent cursor-pointer">
+          <div class="h-px mx-3" style="background: var(--line)"></div>
+          <button id="btn-logout" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left border-0 bg-transparent cursor-pointer" style="transition: background-color 0.1s">
             <i class="fa-solid fa-right-from-bracket text-[10px] w-3" style="color:#D51007"></i>
-            Log out
+            <span class="text-[12.5px] font-medium" style="color:#D51007">Log out</span>
           </button>
         </div>
       </div>
-
-      <button id="gear-pill" class="flex items-center justify-center w-7 h-7 rounded-full bg-black/[0.05] dark:bg-white/[0.07] hover:bg-black/[0.09] dark:hover:bg-white/[0.11] transition-colors duration-150 cursor-pointer border-0">
-        <i class="fa-solid fa-gear text-[11px] text-black/50 dark:text-white/50"></i>
+      <button id="gear-pill" class="flex items-center justify-center w-7 h-7 rounded-full">
+        <i id="gear-icon" class="fa-solid fa-gear text-[11px] t2"></i>
       </button>
-
     </div>
   </div>
 
-  <div class="flex-1 flex items-center justify-center">
-    <span class="text-[12px] text-black/20 dark:text-white/20"></span>
+  <!-- Main view -->
+  <div id="main-view" class="flex-1 flex flex-col">
+
+    <div class="flex-1 flex flex-col items-center justify-center gap-3">
+      <div class="relative w-[82px] h-[82px]">
+        <div id="sonar1" class="sonar-ring hidden absolute inset-0 rounded-full" style="border: 1px solid #D51007"></div>
+        <div id="sonar2" class="sonar-ring delay hidden absolute inset-0 rounded-full" style="border: 1px solid #D51007"></div>
+        <button id="listen-btn" onclick="handleListen()" class="absolute inset-0 rounded-full flex items-center justify-center">
+          <svg id="icon-mic" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="2" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.4" class="tb"/>
+            <path d="M5 10a7 7 0 0014 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" class="tb"/>
+            <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" class="tb"/>
+            <line x1="9.5" y1="21" x2="14.5" y2="21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" class="tb"/>
+          </svg>
+          <svg id="icon-bars" class="hidden" width="24" height="18" viewBox="0 0 26 20">
+            <rect class="bar b1" x="0"    y="6" width="3.5" height="8"  rx="1.75" fill="#D51007"/>
+            <rect class="bar b2" x="5.5"  y="2" width="3.5" height="16" rx="1.75" fill="#D51007"/>
+            <rect class="bar b3" x="11"   y="0" width="3.5" height="20" rx="1.75" fill="#D51007"/>
+            <rect class="bar b4" x="16.5" y="2" width="3.5" height="16" rx="1.75" fill="#D51007"/>
+            <rect class="bar b5" x="22"   y="6" width="3.5" height="8"  rx="1.75" fill="#D51007"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center gap-1">
+        <span id="status-text" class="text-[12px] tc">Tap to listen</span>
+        <span id="timer" class="hidden text-[11px] tabular-nums td">0:00</span>
+      </div>
+    </div>
+
+    <div id="track-strip" class="hidden track-reveal py-3">
+      <div class="flex items-center gap-3">
+        <img id="art" src="" alt="" class="w-11 h-11 object-cover rounded flex-shrink-0" style="background: var(--line)" />
+        <div class="flex-1 min-w-0">
+          <div id="t-title" class="text-[13.5px] font-medium tracking-[-0.015em] t1 truncate leading-snug"></div>
+          <div id="t-artist" class="text-[11.5px] t2 truncate mt-0.5"></div>
+          <div id="scrobbled-badge" class="hidden badge-in text-[8.5px] font-bold tracking-[0.1em] uppercase mt-1" style="color:#D51007">Scrobbled</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="history-section" class="hidden">
+      <div id="hist-section-inner" class="pt-2.5 pb-1">
+        <p class="text-[9px] font-bold tracking-[0.12em] uppercase td mb-2">Recent</p>
+        <div id="hist-list" class="flex flex-col"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Settings view -->
+  <div id="settings-view" class="settings-view hidden flex-1 flex-col justify-between py-4">
+    <div class="flex flex-col gap-5">
+      <div>
+        <p class="text-[10px] font-semibold tracking-[0.08em] uppercase t3 mb-3">Audio Source</p>
+        <div class="flex gap-2">
+          <button data-source="mic"    class="source-btn theme-btn">Microphone</button>
+          <button data-source="system" class="source-btn theme-btn">Computer Audio</button>
+        </div>
+        <p id="perm-warning" class="hidden text-[10.5px] mt-2.5 leading-relaxed" style="color:#D51007">
+          Screen Recording permission required. <button id="btn-open-prefs" class="border-0 bg-transparent cursor-pointer text-[10.5px] font-semibold underline p-0" style="color:#D51007">Open Settings</button>
+        </p>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[10px] font-semibold tracking-[0.08em] uppercase t3">Microphone</p>
+          <button id="mic-refresh" class="flex items-center gap-1 border-0 bg-transparent cursor-pointer p-0" style="transition: color 0.15s">
+            <i class="fa-solid fa-rotate-right text-[9px] tc"></i>
+            <span class="text-[9px] font-medium tracking-[0.06em] uppercase tc">Refresh</span>
+          </button>
+        </div>
+        <div class="relative">
+          <select id="mic-select" class="w-full h-8 rounded-lg text-[12px] font-medium px-2.5 pr-7 appearance-none cursor-pointer border-0 outline-none">
+            <option value="">System Default</option>
+          </select>
+          <i class="fa-solid fa-chevron-down text-[8px] tc absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold tracking-[0.08em] uppercase t3 mb-3">Appearance</p>
+        <div class="flex gap-2">
+          <button data-theme="system" class="theme-btn">System</button>
+          <button data-theme="light"  class="theme-btn">Light</button>
+          <button data-theme="dark"   class="theme-btn">Dark</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-center gap-1">
+      <span id="app-version" class="text-[11px] td"></span>
+      <p class="text-[11px] t3">Made with ❤️ by <button id="btn-julian" class="t2">Julian</button></p>
+      <p class="text-[11px] t3">The app is open source - <button id="btn-opensource" class="t2">View Code</button></p>
+    </div>
   </div>
 
 </div>
-
 <script>
   const { invoke } = window.__TAURI__.core;
 
+  // ── Username ──
   const cachedUsername = localStorage.getItem('lfm_username');
   if (cachedUsername) document.getElementById('username').textContent = cachedUsername;
-
   invoke('get_lastfm_username').then(name => {
     document.getElementById('username').textContent = name;
     localStorage.setItem('lfm_username', name);
   }).catch(() => {});
 
+  // ── App version ──
+  invoke('get_app_version').then(v => {
+    document.getElementById('app-version').textContent = 'v' + v;
+  }).catch(() => {});
+
+  // ── User pill dropdown ──
   const userPill = document.getElementById('user-pill');
   const dropdown = document.getElementById('user-dropdown');
-
-  userPill.addEventListener('click', e => {
-    e.stopPropagation();
-    dropdown.classList.toggle('hidden');
-  });
-
+  userPill.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('hidden'); });
   document.addEventListener('click', () => dropdown.classList.add('hidden'));
   dropdown.addEventListener('click', e => e.stopPropagation());
 
@@ -90,14 +309,230 @@
     dropdown.classList.add('hidden');
     invoke('open_lastfm_profile').catch(() => {});
   });
-
   document.getElementById('btn-logout').addEventListener('click', () => {
     dropdown.classList.add('hidden');
     localStorage.removeItem('lfm_username');
-    invoke('logout').then(() => {
-      window.location.href = 'index.html';
-    }).catch(() => {});
+    invoke('logout').then(() => { window.location.href = 'index.html'; }).catch(() => {});
   });
+
+  // ── Settings panel ──
+  let settingsOpen = false;
+  document.getElementById('gear-pill').addEventListener('click', () => {
+    settingsOpen = !settingsOpen;
+    document.getElementById('main-view').classList.toggle('hidden', settingsOpen);
+    const sv = document.getElementById('settings-view');
+    sv.classList.toggle('hidden', !settingsOpen);
+    sv.classList.toggle('flex', settingsOpen);
+    const icon = document.getElementById('gear-icon');
+    icon.className = settingsOpen
+      ? 'fa-solid fa-xmark text-[11px] t2'
+      : 'fa-solid fa-gear text-[11px] t2';
+  });
+
+  // ── Audio source ──
+  function updateSourceButtons(active) {
+    document.querySelectorAll('[data-source]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.source === active);
+    });
+    document.getElementById('perm-warning').classList.add('hidden');
+  }
+
+  const savedSource = localStorage.getItem('audio_source') || 'mic';
+  invoke('set_audio_source', { source: savedSource }).catch(() => {});
+  updateSourceButtons(savedSource);
+
+  document.querySelectorAll('.source-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = btn.dataset.source;
+      localStorage.setItem('audio_source', s);
+      invoke('set_audio_source', { source: s }).catch(() => {});
+      updateSourceButtons(s);
+    });
+  });
+
+  document.getElementById('btn-open-prefs').addEventListener('click', () => {
+    invoke('open_url', { url: 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture' }).catch(() => {});
+  });
+
+  // ── Microphone selector ──
+  function loadAudioDevices() {
+    const refreshIcon = document.querySelector('#mic-refresh i');
+    refreshIcon.style.transition = 'transform 0.4s ease';
+    refreshIcon.style.transform = 'rotate(360deg)';
+    setTimeout(() => { refreshIcon.style.transition = 'none'; refreshIcon.style.transform = ''; }, 420);
+
+    invoke('get_audio_devices').then(devices => {
+      const sel = document.getElementById('mic-select');
+      const current = sel.value;
+      // Rebuild options keeping System Default
+      sel.innerHTML = '<option value="">System Default</option>';
+      devices.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        sel.appendChild(opt);
+      });
+      // Restore previous selection if still available
+      const saved = localStorage.getItem('mic_device') || '';
+      if (saved && devices.includes(saved)) {
+        sel.value = saved;
+      } else if (saved) {
+        localStorage.removeItem('mic_device');
+        invoke('set_audio_device', { name: '' }).catch(() => {});
+      }
+    }).catch(() => {});
+  }
+
+  // Initial load — also apply persisted device to backend
+  const savedMic = localStorage.getItem('mic_device') || '';
+  invoke('set_audio_device', { name: savedMic }).catch(() => {});
+  loadAudioDevices();
+
+  document.getElementById('mic-refresh').addEventListener('click', loadAudioDevices);
+
+  document.getElementById('mic-select').addEventListener('change', e => {
+    const name = e.target.value;
+    localStorage.setItem('mic_device', name);
+    invoke('set_audio_device', { name }).catch(() => {});
+  });
+
+  // ── Theme ──
+  function applyTheme(t) {
+    const html = document.documentElement;
+    html.classList.remove('dark', 'light');
+    if (t === 'dark')  html.classList.add('dark');
+    if (t === 'light') html.classList.add('light');
+    // 'system' → no forced class, @media query in CSS handles it
+  }
+
+  function updateThemeButtons(active) {
+    document.querySelectorAll('[data-theme]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === active);
+    });
+  }
+
+  const savedTheme = localStorage.getItem('theme') || 'system';
+  updateThemeButtons(savedTheme);
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.theme;
+      localStorage.setItem('theme', t);
+      applyTheme(t);
+      updateThemeButtons(t);
+    });
+  });
+
+  document.getElementById('btn-julian').addEventListener('click', () => {
+    invoke('open_url', { url: 'https://github.com/julianrut' }).catch(() => {});
+  });
+
+  document.getElementById('btn-opensource').addEventListener('click', () => {
+    invoke('open_url', { url: 'https://github.com/julianrut/scrobloop' }).catch(() => {});
+  });
+
+  // ── Scrobble flow ──
+  let appState = 'idle';
+  let timerInterval = null;
+  let elapsed = 0;
+
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderHistory(tracks) {
+    if (!tracks || !tracks.length) return;
+    document.getElementById('history-section').classList.remove('hidden');
+    document.getElementById('hist-list').innerHTML = tracks.map((t, i) => `
+      <div class="hist-in flex items-center gap-2 py-[4px]" style="animation-delay:${i * 0.04}s">
+        ${t.coverart
+          ? `<img src="${esc(t.coverart)}" class="w-6 h-6 rounded flex-shrink-0 object-cover" style="background:var(--line)" />`
+          : `<div class="w-6 h-6 rounded flex-shrink-0" style="background:var(--line)"></div>`
+        }
+        <span class="text-[11.5px] tb truncate flex-1">${esc(t.title)}</span>
+        <span class="text-[10.5px] td truncate max-w-[90px]">${esc(t.artist)}</span>
+      </div>`).join('');
+  }
+
+  invoke('get_recent_tracks').then(tracks => renderHistory(tracks)).catch(() => {});
+
+  function setListening() {
+    appState = 'listening';
+    document.getElementById('listen-btn').style.borderColor = '#D51007';
+    document.getElementById('listen-btn').style.background = 'rgba(213,16,7,0.05)';
+    document.getElementById('icon-mic').classList.add('hidden');
+    document.getElementById('icon-bars').classList.remove('hidden');
+    document.getElementById('sonar1').classList.remove('hidden');
+    document.getElementById('sonar2').classList.remove('hidden');
+    document.getElementById('status-text').textContent = 'Listening…';
+    const timer = document.getElementById('timer');
+    timer.classList.remove('hidden');
+    elapsed = 0;
+    timer.textContent = '0:00';
+    timerInterval = setInterval(() => {
+      elapsed++;
+      timer.textContent = Math.floor(elapsed / 60) + ':' + String(elapsed % 60).padStart(2, '0');
+    }, 1000);
+  }
+
+  function setIdle() {
+    appState = 'idle';
+    clearInterval(timerInterval);
+    document.getElementById('listen-btn').style.borderColor = '';
+    document.getElementById('listen-btn').style.background = '';
+    document.getElementById('icon-mic').classList.remove('hidden');
+    document.getElementById('icon-bars').classList.add('hidden');
+    document.getElementById('sonar1').classList.add('hidden');
+    document.getElementById('sonar2').classList.add('hidden');
+    document.getElementById('status-text').textContent = 'Tap to listen';
+    document.getElementById('timer').classList.add('hidden');
+  }
+
+  function revealTrack(track) {
+    setIdle();
+    const strip = document.getElementById('track-strip');
+    strip.classList.remove('hidden');
+    strip.classList.add('track-reveal');
+    document.getElementById('art').src = track.coverart || '';
+    document.getElementById('t-title').textContent = track.title || '—';
+    document.getElementById('t-artist').textContent = track.artist || '—';
+    const badge = document.getElementById('scrobbled-badge');
+    badge.classList.remove('hidden');
+    badge.classList.add('badge-in');
+
+    // Refresh history from Last.fm after a short delay (let the scrobble propagate)
+    setTimeout(() => {
+      invoke('get_recent_tracks').then(tracks => renderHistory(tracks)).catch(() => {});
+    }, 3000);
+  }
+
+  async function handleListen() {
+    if (appState === 'listening') {
+      invoke('stop_scrobble').catch(() => {});
+      setIdle();
+      return;
+    }
+    setListening();
+    try {
+      const track = await invoke('start_scrobble');
+      revealTrack(track);
+    } catch (e) {
+      setIdle();
+      if (e === 'no_match') {
+        document.getElementById('status-text').textContent = 'Not recognized';
+      } else if (e === 'screen_recording_permission' || e === 'no_monitor_device') {
+        document.getElementById('status-text').textContent = 'Permission needed';
+        if (!settingsOpen) document.getElementById('gear-pill').click();
+        document.getElementById('perm-warning').classList.remove('hidden');
+      } else {
+        console.error(e);
+        document.getElementById('status-text').textContent = 'Error';
+      }
+      setTimeout(() => {
+        document.getElementById('status-text').textContent = 'Tap to listen';
+      }, 2500);
+    }
+  }
 </script>
 </body>
 </html>

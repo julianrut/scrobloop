@@ -36,6 +36,9 @@
     ],
     "externalBin": [
       "binaries/recognize-audio"
-    ]
+    ],
+    "macOS": {
+      "infoPlist": "./Info.plist"
+    }
   }
 }

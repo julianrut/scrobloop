@@ -94,6 +94,49 @@ pub async fn get_session(token: &str) -> Result<(String, String), String> {
     Ok((key, name))
 }
 
+pub async fn scrobble_track(session_key: &str, artist: &str, title: &str, album: &str) -> Result<(), String> {
+    let timestamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs()
+        .to_string();
+
+    let mut params = BTreeMap::new();
+    params.insert("api_key", API_KEY.to_string());
+    params.insert("artist", artist.to_string());
+    params.insert("method", "track.scrobble".to_string());
+    params.insert("sk", session_key.to_string());
+    params.insert("timestamp", timestamp.clone());
+    params.insert("track", title.to_string());
+    if !album.is_empty() {
+        params.insert("album", album.to_string());
+    }
+    let sig = api_sig(&params);
+
+    let mut form: Vec<(&str, String)> = vec![
+        ("method", "track.scrobble".to_string()),
+        ("api_key", API_KEY.to_string()),
+        ("sk", session_key.to_string()),
+        ("artist", artist.to_string()),
+        ("track", title.to_string()),
+        ("timestamp", timestamp),
+        ("api_sig", sig),
+        ("format", "json".to_string()),
+    ];
+    if !album.is_empty() {
+        form.push(("album", album.to_string()));
+    }
+
+    reqwest::Client::new()
+        .post(API_BASE)
+        .form(&form)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
 // ── Tauri commands ─────────────────────────────────────────────────────────
 
 #[tauri::command]
@@ -168,6 +211,50 @@ pub async fn open_lastfm_profile(state: tauri::State<'_, LastfmState>) -> Result
         .ok_or_else(|| "could not get profile url".to_string())?;
 
     open::that(url).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_recent_tracks(state: tauri::State<'_, LastfmState>) -> Result<serde_json::Value, String> {
+    let sk = state.session_key.lock().unwrap().clone()
+        .ok_or_else(|| "not authenticated".to_string())?;
+
+    let resp = reqwest::Client::new()
+        .get(API_BASE)
+        .query(&[
+            ("method", "user.getRecentTracks"),
+            ("api_key", API_KEY),
+            ("sk", &sk),
+            ("limit", "5"),
+            ("format", "json"),
+        ])
+        .send()
+        .await
+        .map_err(|e| e.to_string())?
+        .json::<serde_json::Value>()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let tracks = resp["recenttracks"]["track"]
+        .as_array()
+        .ok_or_else(|| "unexpected response".to_string())?;
+
+    let result: Vec<serde_json::Value> = tracks.iter()
+        .filter(|t| t.get("@attr").and_then(|a| a["nowplaying"].as_str()) != Some("true"))
+        .take(4)
+        .map(|t| {
+            let title  = t["name"].as_str().unwrap_or("").to_string();
+            let artist = t["artist"]["#text"].as_str().unwrap_or("").to_string();
+            let coverart = t["image"]
+                .as_array()
+                .and_then(|imgs| imgs.iter().find(|i| i["size"].as_str() == Some("large")))
+                .and_then(|i| i["#text"].as_str())
+                .unwrap_or("")
+                .to_string();
+            serde_json::json!({ "title": title, "artist": artist, "coverart": coverart })
+        })
+        .collect();
+
+    Ok(serde_json::Value::Array(result))
 }
 
 #[tauri::command]

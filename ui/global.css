@@ -15,6 +15,7 @@
         height: 480px;
         padding: 16px;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg);
     }
 
     * {
@@ -23,3 +24,122 @@
         -moz-user-select: none;
         -ms-user-select: none;
     }
+
+    /* ── Theme variables ── */
+    html {
+        --bg:        #ffffff;
+        --surface:   #f5f5f5;
+        --t1:        rgba(0,0,0,0.90);
+        --t2:        rgba(0,0,0,0.48);
+        --t3:        rgba(0,0,0,0.28);
+        --ta:        rgba(0,0,0,0.75);
+        --tb:        rgba(0,0,0,0.55);
+        --tc:        rgba(0,0,0,0.40);
+        --td:        rgba(0,0,0,0.25);
+        --line:      rgba(0,0,0,0.08);
+        --pill:      rgba(0,0,0,0.05);
+        --pill-h:    rgba(0,0,0,0.09);
+        --logo:      rgba(0,0,0,0.82);
+        --btn-bg:    #111111;
+        --btn-fg:    #ffffff;
+        --btn-hbg:   #222222;
+        --btn-abg:   #333333;
+        --drop-bg:   #ffffff;
+        --drop-item: rgba(0,0,0,0.04);
+        --drop-item-h: rgba(0,0,0,0.07);
+        --drop-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.12);
+        --surf-btn:  rgba(0,0,0,0.04);
+        --surf-btn-b: rgba(0,0,0,0.08);
+        --hist-dot:  rgba(0,0,0,0.12);
+    }
+
+    html.dark {
+        --bg:        #0a0a0a;
+        --surface:   #141414;
+        --t1:        rgba(255,255,255,0.92);
+        --t2:        rgba(255,255,255,0.42);
+        --t3:        rgba(255,255,255,0.18);
+        --ta:        rgba(255,255,255,0.75);
+        --tb:        rgba(255,255,255,0.55);
+        --tc:        rgba(255,255,255,0.40);
+        --td:        rgba(255,255,255,0.25);
+        --line:      rgba(255,255,255,0.08);
+        --pill:      rgba(255,255,255,0.07);
+        --pill-h:    rgba(255,255,255,0.11);
+        --logo:      rgba(255,255,255,0.92);
+        --btn-bg:    #ffffff;
+        --btn-fg:    #111111;
+        --btn-hbg:   #f0f0f0;
+        --btn-abg:   #e5e5e5;
+        --drop-bg:   #1a1a1a;
+        --drop-item: rgba(255,255,255,0.06);
+        --drop-item-h: rgba(255,255,255,0.09);
+        --drop-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.5);
+        --surf-btn:  rgba(255,255,255,0.06);
+        --surf-btn-b: rgba(255,255,255,0.08);
+        --hist-dot:  rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html:not(.light) {
+            --bg:        #0a0a0a;
+            --surface:   #141414;
+            --t1:        rgba(255,255,255,0.92);
+            --t2:        rgba(255,255,255,0.42);
+            --t3:        rgba(255,255,255,0.18);
+            --ta:        rgba(255,255,255,0.75);
+            --tb:        rgba(255,255,255,0.55);
+            --tc:        rgba(255,255,255,0.40);
+            --td:        rgba(255,255,255,0.25);
+            --line:      rgba(255,255,255,0.08);
+            --pill:      rgba(255,255,255,0.07);
+            --pill-h:    rgba(255,255,255,0.11);
+            --logo:      rgba(255,255,255,0.92);
+            --btn-bg:    #ffffff;
+            --btn-fg:    #111111;
+            --btn-hbg:   #f0f0f0;
+            --btn-abg:   #e5e5e5;
+            --drop-bg:   #1a1a1a;
+            --drop-item: rgba(255,255,255,0.06);
+            --drop-item-h: rgba(255,255,255,0.09);
+            --drop-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.5);
+            --surf-btn:  rgba(255,255,255,0.06);
+            --surf-btn-b: rgba(255,255,255,0.08);
+            --hist-dot:  rgba(255,255,255,0.12);
+        }
+    }
+
+    /* ── Theme utility classes ── */
+    .t1  { color: var(--t1);  }
+    .t2  { color: var(--t2);  }
+    .t3  { color: var(--t3);  }
+    .ta  { color: var(--ta);  }
+    .tb  { color: var(--tb);  }
+    .tc  { color: var(--tc);  }
+    .td  { color: var(--td);  }
+
+    .pill-btn {
+        background-color: var(--pill);
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.15s;
+    }
+    .pill-btn:hover { background-color: var(--pill-h); }
+
+    .theme-btn-primary {
+        background-color: var(--btn-bg);
+        color: var(--btn-fg);
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.12s, transform 0.12s, box-shadow 0.12s;
+    }
+    .theme-btn-primary:hover  { background-color: var(--btn-hbg); transform: translateY(-1px); }
+    .theme-btn-primary:active { background-color: var(--btn-abg); transform: translateY(0); }
+
+    .drop-item-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.1s;
+    }
+    .drop-item-btn:hover { background-color: var(--drop-item-h); }
