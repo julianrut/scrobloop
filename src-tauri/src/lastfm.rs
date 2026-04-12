@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 use std::sync::Mutex;
+use tauri::Manager;
 
 pub const API_KEY: &str = env!("LASTFM_API_KEY");
 const API_SECRET: &str = env!("LASTFM_API_SECRET");
@@ -107,6 +108,7 @@ pub async fn start_lastfm_auth(
 
 #[tauri::command]
 pub async fn check_lastfm_auth_status(
+    app: tauri::AppHandle,
     state: tauri::State<'_, LastfmState>,
 ) -> Result<bool, String> {
     let token = state.pending_token.lock().unwrap().clone();
@@ -114,6 +116,10 @@ pub async fn check_lastfm_auth_status(
 
     match get_session(&token).await {
         Ok((session_key, _)) => {
+            if let Ok(data_dir) = app.path().app_data_dir() {
+                std::fs::create_dir_all::<&std::path::Path>(data_dir.as_ref()).ok();
+                std::fs::write(data_dir.join(".session_key"), &session_key).ok();
+            }
             *state.session_key.lock().unwrap() = Some(session_key);
             *state.pending_token.lock().unwrap() = None;
             Ok(true)

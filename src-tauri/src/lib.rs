@@ -93,6 +93,16 @@ pub fn run() {
                 }
             }
 
+            if let Ok(data_dir) = app.path().app_data_dir() {
+                let key_path = data_dir.join(".session_key");
+                if let Ok(key) = std::fs::read_to_string(&key_path) {
+                    let key = key.trim().to_string();
+                    if !key.is_empty() {
+                        *app.state::<LastfmState>().session_key.lock().unwrap() = Some(key);
+                    }
+                }
+            }
+
             let window = app.get_webview_window("main").unwrap();
             window.set_background_color(Some(Color(0, 0, 0, 0))).unwrap();
 
