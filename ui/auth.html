@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script>tailwind.config = { darkMode: 'media' }</script>
+  <script src="https://cdn.tailwindcss.com" onerror="location.replace('no_internet.html')"></script>
+  <link rel="stylesheet" href="./global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .panel {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+    }
+    @keyframes up {
+      from { opacity: 0; transform: translateY(7px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .e1 { animation: up 0.38s ease both; }
+    .e2 { animation: up 0.38s 0.07s ease both; }
+    .e3 { animation: up 0.38s 0.14s ease both; }
+    .e4 { animation: up 0.38s 0.21s ease both; }
+    @keyframes sweep {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(500%); }
+    }
+    .sweep { animation: sweep 1.6s cubic-bezier(0.4,0,0.6,1) infinite; }
+  </style>
+</head>
+<body>
+<div class="panel bg-white dark:bg-[#0a0a0a] flex flex-col items-center justify-center px-8 relative">
+
+  <div class="relative z-10 w-full flex flex-col items-center gap-7">
+
+    <div class="e1 flex items-center justify-center text-black/80 dark:text-white/90">
+      <svg width="42" height="42" viewBox="0 0 353 353" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M260.15 302.72L259.29 303.58L258.86 304.01C258.43 304.01 258 304.44 258 304.44C258 304.44 257.57 304.44 257.57 304.87C257.14 304.87 256.71 305.3 255.85 305.3H219.73V318.2C219.73 322.93 215.86 326.8 211.13 326.8H141.9C137.17 326.8 133.3 322.93 133.3 318.2V275.2C133.3 270.47 137.17 266.6 141.9 266.6H210.7C215.43 266.6 219.3 270.47 219.3 275.2V288.1H249.83L352.6 173.29C350.88 77.4 272.62 0 176.3 0C79.12 0 0 79.12 0 176.3C0 273.48 79.12 352.6 176.3 352.6C265.31 352.6 338.84 286.38 350.88 200.81L260.15 302.72C260.15 302.29 260.15 302.29 260.15 302.72ZM43.43 167.27C43.43 170.28 43 173.29 43 176.3C43 181.03 39.13 184.9 34.4 184.9C29.67 184.9 25.8 181.03 25.8 176.3C25.8 93.31 93.31 25.8 176.3 25.8C181.03 25.8 184.9 29.67 184.9 34.4C184.9 39.13 181.03 43 176.3 43C173.29 43 170.28 43 167.27 43.43C101.05 47.73 47.73 101.05 43.43 167.27ZM107.5 176.3C107.5 138.46 138.46 107.5 176.3 107.5C214.14 107.5 245.1 138.46 245.1 176.3C245.1 214.14 214.14 245.1 176.3 245.1C138.46 245.1 107.5 214.14 107.5 176.3ZM227.9 176.3C227.9 147.92 204.68 124.7 176.3 124.7C147.92 124.7 124.7 147.92 124.7 176.3C124.7 204.68 147.92 227.9 176.3 227.9C204.68 227.9 227.9 204.68 227.9 176.3ZM150.5 176.3C150.5 162.11 162.11 150.5 176.3 150.5C190.49 150.5 202.1 162.11 202.1 176.3C202.1 190.49 190.49 202.1 176.3 202.1C162.11 202.1 150.5 190.49 150.5 176.3ZM176.3 184.9C171.57 184.9 167.7 181.03 167.7 176.3C167.7 171.57 171.57 167.7 176.3 167.7C181.03 167.7 184.9 171.57 184.9 176.3C184.9 181.03 181.03 184.9 176.3 184.9ZM150.5 309.6V283.8H202.1V309.6H150.5Z" fill="currentColor"/>
+      </svg>
+    </div>
+
+    <div class="e2 text-center flex flex-col gap-2.5">
+      <div class="text-[21px] font-semibold tracking-[-0.03em] leading-[1.15] text-black/90 dark:text-white/90">Connect Last.fm</div>
+      <p class="text-[13px] leading-relaxed text-black/50 dark:text-white/[0.42] max-w-[236px] mx-auto">Link your account to start using Scrobloop.</p>
+    </div>
+
+    <div class="e3 w-full h-px bg-black/[0.09] dark:bg-white/[0.08]"></div>
+
+    <div class="e4 w-full flex flex-col items-center gap-2.5">
+
+      <div id="btn-wrap" class="w-full">
+        <button id="connect-btn" class="w-full h-11 rounded-lg text-[14px] font-medium tracking-[-0.01em] flex items-center justify-center gap-2 cursor-pointer border-0 transition-all duration-[120ms] bg-[#111] text-white hover:bg-[#222] active:bg-[#333] dark:bg-white dark:text-[#111] dark:hover:bg-[#f0f0f0] dark:active:bg-[#e5e5e5] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_1px_3px_rgba(0,0,0,0.25),0_4px_14px_rgba(0,0,0,0.15)] dark:shadow-[0_0_0_1px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.35),0_4px_14px_rgba(0,0,0,0.22)] hover:-translate-y-px active:translate-y-0">
+          <i class="fa-brands fa-lastfm text-[15px] text-[#D51007]"></i>
+          Authenticate with Last.fm
+        </button>
+      </div>
+
+      <div id="waiting" class="w-full flex-col items-center gap-3" style="display:none">
+        <div class="w-full h-px bg-black/[0.09] dark:bg-white/[0.08] overflow-hidden relative">
+          <div class="sweep absolute inset-0 w-[20%] bg-[#D51007] rounded-[1px]"></div>
+        </div>
+        <span class="text-[11px] font-medium tracking-[0.09em] uppercase text-black/[0.28] dark:text-white/[0.18]">Waiting for browser</span>
+        <button id="cancel-btn" class="bg-transparent border-0 text-[12px] cursor-pointer py-1 text-black/[0.28] hover:text-black/50 dark:text-white/[0.18] dark:hover:text-white/[0.42] transition-colors duration-150">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let poll = null;
+
+  document.getElementById('connect-btn').addEventListener('click', () => {
+    const { invoke } = window.__TAURI__.core;
+    invoke('start_lastfm_auth').then(() => {
+      document.getElementById('btn-wrap').style.display = 'none';
+      document.getElementById('waiting').style.display = 'flex';
+      poll = setInterval(() => {
+        invoke('check_lastfm_auth_status').then(ok => {
+          if (ok) {
+            clearInterval(poll);
+            window.location.href = 'index.html';
+          }
+        }).catch(() => {});
+      }, 2000);
+    }).catch(err => console.error(err));
+  });
+
+  document.getElementById('cancel-btn').addEventListener('click', () => {
+    clearInterval(poll);
+    document.getElementById('btn-wrap').style.display = '';
+    document.getElementById('waiting').style.display = 'none';
+  });
+</script>
+</body>
+</html>

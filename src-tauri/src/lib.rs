@@ -1,3 +1,6 @@
+mod lastfm;
+use lastfm::LastfmState;
+
 use tauri::{
     image::Image,
     menu::{Menu, MenuItem},
@@ -53,6 +56,13 @@ fn tray_icon() -> Image<'static> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(LastfmState::new())
+        .invoke_handler(tauri::generate_handler![
+            lastfm::is_lastfm_authenticated,
+            lastfm::start_lastfm_auth,
+            lastfm::check_lastfm_auth_status,
+            lastfm::get_lastfm_username,
+        ])
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))

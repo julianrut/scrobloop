@@ -28,5 +28,15 @@
   </div>
 </body>
 <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const { invoke } = window.__TAURI__.core;
+    invoke('is_lastfm_authenticated')
+      .then(authenticated => {
+        setTimeout(() => {
+          window.location.href = authenticated ? './scrobble.html' : './auth.html';
+        }, 1000);
+      })
+      .catch(err => console.error(err));
+  });
 </script>
 </html>
