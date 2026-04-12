@@ -62,6 +62,8 @@ pub fn run() {
             lastfm::start_lastfm_auth,
             lastfm::check_lastfm_auth_status,
             lastfm::get_lastfm_username,
+            lastfm::logout,
+            lastfm::open_lastfm_profile,
         ])
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_notification::init())

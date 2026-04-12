@@ -134,6 +134,43 @@ pub fn is_lastfm_authenticated(state: tauri::State<'_, LastfmState>) -> bool {
 }
 
 #[tauri::command]
+pub fn logout(app: tauri::AppHandle, state: tauri::State<'_, LastfmState>) {
+    *state.session_key.lock().unwrap() = None;
+    *state.pending_token.lock().unwrap() = None;
+    if let Ok(data_dir) = app.path().app_data_dir() {
+        std::fs::remove_file(data_dir.join(".session_key")).ok();
+    }
+}
+
+#[tauri::command]
+pub async fn open_lastfm_profile(state: tauri::State<'_, LastfmState>) -> Result<(), String> {
+    let sk = state.session_key.lock().unwrap().clone()
+        .ok_or_else(|| "not authenticated".to_string())?;
+
+    let resp = reqwest::Client::new()
+        .get(API_BASE)
+        .query(&[
+            ("method", "user.getInfo"),
+            ("api_key", API_KEY),
+            ("sk", &sk),
+            ("format", "json"),
+        ])
+        .send()
+        .await
+        .map_err(|e| e.to_string())?
+        .json::<serde_json::Value>()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let url = resp["user"]["url"]
+        .as_str()
+        .map(|s| s.to_string())
+        .ok_or_else(|| "could not get profile url".to_string())?;
+
+    open::that(url).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub async fn get_lastfm_username(state: tauri::State<'_, LastfmState>) -> Result<String, String> {
     let sk = state.session_key.lock().unwrap().clone()
         .ok_or_else(|| "not authenticated".to_string())?;

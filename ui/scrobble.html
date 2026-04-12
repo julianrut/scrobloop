@@ -3,17 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <script>tailwind.config = { darkMode: 'media' }</script>
-  <script src="https://cdn.tailwindcss.com" onerror="location.replace('no_internet.html')"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .panel {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dropdown { animation: fadeIn 0.15s ease both; }
+  </style>
 </head>
 <body>
-<div class="panel bg-[#0a0a0a] flex items-center justify-center">
-  <span id="username" class="text-white/70 text-sm font-medium tracking-[-0.01em]"></span>
+<div class="panel bg-white dark:bg-[#0a0a0a] flex flex-col">
+
+  <div class="flex items-center justify-between -mx-4 -mt-4 px-4 pt-3 pb-3 border-b border-black/[0.06] dark:border-white/[0.06]">
+
+    <div class="flex items-center gap-2">
+      <svg width="18" height="18" viewBox="0 0 353 353" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-black dark:text-white flex-shrink-0">
+        <path d="M260.15 302.72L259.29 303.58L258.86 304.01C258.43 304.01 258 304.44 258 304.44C258 304.44 257.57 304.44 257.57 304.87C257.14 304.87 256.71 305.3 255.85 305.3H219.73V318.2C219.73 322.93 215.86 326.8 211.13 326.8H141.9C137.17 326.8 133.3 322.93 133.3 318.2V275.2C133.3 270.47 137.17 266.6 141.9 266.6H210.7C215.43 266.6 219.3 270.47 219.3 275.2V288.1H249.83L352.6 173.29C350.88 77.4 272.62 0 176.3 0C79.12 0 0 79.12 0 176.3C0 273.48 79.12 352.6 176.3 352.6C265.31 352.6 338.84 286.38 350.88 200.81L260.15 302.72C260.15 302.29 260.15 302.29 260.15 302.72ZM43.43 167.27C43.43 170.28 43 173.29 43 176.3C43 181.03 39.13 184.9 34.4 184.9C29.67 184.9 25.8 181.03 25.8 176.3C25.8 93.31 93.31 25.8 176.3 25.8C181.03 25.8 184.9 29.67 184.9 34.4C184.9 39.13 181.03 43 176.3 43C173.29 43 170.28 43 167.27 43.43C101.05 47.73 47.73 101.05 43.43 167.27ZM107.5 176.3C107.5 138.46 138.46 107.5 176.3 107.5C214.14 107.5 245.1 138.46 245.1 176.3C245.1 214.14 214.14 245.1 176.3 245.1C138.46 245.1 107.5 214.14 107.5 176.3ZM227.9 176.3C227.9 147.92 204.68 124.7 176.3 124.7C147.92 124.7 124.7 147.92 124.7 176.3C124.7 204.68 147.92 227.9 176.3 227.9C204.68 227.9 227.9 204.68 227.9 176.3ZM150.5 176.3C150.5 162.11 162.11 150.5 176.3 150.5C190.49 150.5 202.1 162.11 202.1 176.3C202.1 190.49 190.49 202.1 176.3 202.1C162.11 202.1 150.5 190.49 150.5 176.3ZM176.3 184.9C171.57 184.9 167.7 181.03 167.7 176.3C167.7 171.57 171.57 167.7 176.3 167.7C181.03 167.7 184.9 171.57 184.9 176.3C184.9 181.03 181.03 184.9 176.3 184.9ZM150.5 309.6V283.8H202.1V309.6H150.5Z" fill="currentColor"/>
+      </svg>
+      <span class="text-[13px] font-semibold tracking-[-0.02em] text-black/90 dark:text-white/90">Scrobloop</span>
+    </div>
+
+    <div class="flex items-center gap-1.5">
+
+      <div class="relative">
+        <button id="user-pill" class="flex items-center gap-1.5 h-7 px-2.5 rounded-full bg-black/[0.05] dark:bg-white/[0.07] hover:bg-black/[0.09] dark:hover:bg-white/[0.11] transition-colors duration-150 cursor-pointer border-0">
+          <i class="fa-brands fa-lastfm text-[#D51007] text-[11px]"></i>
+          <span id="username" class="text-[11.5px] font-medium tracking-[-0.01em] text-black/75 dark:text-white/75 max-w-[80px] truncate"></span>
+          <i class="fa-solid fa-chevron-down text-[8px] text-black/30 dark:text-white/30"></i>
+        </button>
+
+        <div id="user-dropdown" class="dropdown hidden absolute right-0 top-[calc(100%+6px)] w-44 rounded-xl overflow-hidden z-50 bg-white dark:bg-[#1a1a1a] shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_4px_16px_rgba(0,0,0,0.12)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.5)]">
+          <button id="btn-profile" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-[12.5px] font-medium text-black/80 dark:text-white/80 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors duration-100 border-0 bg-transparent cursor-pointer">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-black/40 dark:text-white/40 w-3"></i>
+            View my profile
+          </button>
+          <div class="h-px bg-black/[0.06] dark:bg-white/[0.06] mx-3"></div>
+          <button id="btn-logout" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-[12.5px] font-medium text-[#D51007] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors duration-100 border-0 bg-transparent cursor-pointer">
+            <i class="fa-solid fa-right-from-bracket text-[10px] w-3" style="color:#D51007"></i>
+            Log out
+          </button>
+        </div>
+      </div>
+
+      <button id="gear-pill" class="flex items-center justify-center w-7 h-7 rounded-full bg-black/[0.05] dark:bg-white/[0.07] hover:bg-black/[0.09] dark:hover:bg-white/[0.11] transition-colors duration-150 cursor-pointer border-0">
+        <i class="fa-solid fa-gear text-[11px] text-black/50 dark:text-white/50"></i>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center">
+    <span class="text-[12px] text-black/20 dark:text-white/20"></span>
+  </div>
+
 </div>
+
 <script>
-  window.__TAURI__.core.invoke('get_lastfm_username')
-    .then(name => { document.getElementById('username').textContent = name; })
-    .catch(() => {});
+  const { invoke } = window.__TAURI__.core;
+
+  const cachedUsername = localStorage.getItem('lfm_username');
+  if (cachedUsername) document.getElementById('username').textContent = cachedUsername;
+
+  invoke('get_lastfm_username').then(name => {
+    document.getElementById('username').textContent = name;
+    localStorage.setItem('lfm_username', name);
+  }).catch(() => {});
+
+  const userPill = document.getElementById('user-pill');
+  const dropdown = document.getElementById('user-dropdown');
+
+  userPill.addEventListener('click', e => {
+    e.stopPropagation();
+    dropdown.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => dropdown.classList.add('hidden'));
+  dropdown.addEventListener('click', e => e.stopPropagation());
+
+  document.getElementById('btn-profile').addEventListener('click', () => {
+    dropdown.classList.add('hidden');
+    invoke('open_lastfm_profile').catch(() => {});
+  });
+
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    dropdown.classList.add('hidden');
+    localStorage.removeItem('lfm_username');
+    invoke('logout').then(() => {
+      window.location.href = 'index.html';
+    }).catch(() => {});
+  });
 </script>
 </body>
 </html>
